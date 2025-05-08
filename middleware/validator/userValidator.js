@@ -31,7 +31,7 @@ const loginValidates = [
 
 // 更新校验规则
 const updateValidates = [
-  check('email').isEmail().withMessage('邮箱格式不正确').bail().custom(async (value) => {
+  check('email').custom(async (value) => {
     // 查询数据库是否存在该邮箱
     const email = await User.findOne({ email: value });
     if (email) {

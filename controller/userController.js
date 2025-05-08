@@ -50,7 +50,19 @@ const login = async (req, res) => {
 }
 
 const userList = async (req, res) => {
-  res.send('user list view');
+  // 返回用户列表
+  const dbBack = await User.find()
+  if (!dbBack) {
+    res.json({
+      code: 400,
+      message: '获取用户列表失败！'
+    })
+  }
+  res.json({
+    code: 200,
+    message: '获取用户列表成功！',
+    result: dbBack
+  })
 }
 
 // 更新用户信息
@@ -84,9 +96,19 @@ const avatar = async (req, res) => {
    * 上传成功后的文件会挂载到req.file对象上，
    * 然后使用fs.renameSync方法将文件进行重命名
    */
-  fs.renameSync(req.file.path, 'public/' + newFileName)
-  console.log(req.file);
-  res.send('user list view');
+  try {
+    fs.renameSync(req.file.path, 'public/' + newFileName)
+    res.json({
+      code: 200,
+      message: '上传成功！',
+      result: newFileName
+    })
+  } catch (error) {
+    res.json({
+      code: 400,
+      message: '上传失败！'
+    })
+  }
 }
 
 module.exports = {
