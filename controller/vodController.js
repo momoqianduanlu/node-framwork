@@ -8,7 +8,7 @@ const client = new RPCClient({
   apiVersion: '2017-03-21',
 });
 
-// 获取vod视频上传凭证
+// 获取阿里云vod视频上传凭证
 const getVod = async (req, res) => {
   const params = {
     Title: 'test',
