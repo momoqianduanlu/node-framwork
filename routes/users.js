@@ -17,10 +17,10 @@ router.post('/reg',
 
 router.post('/login', validators(loginValidates), userController.login);
 
-router.get('/list', verifyToken, userController.userList);
+router.get('/list', verifyToken(), userController.userList);
 
-router.put('/update', verifyToken, validators(updateValidates), userController.update);
+router.put('/update', verifyToken(), validators(updateValidates), userController.update);
 
-router.post('/avatar', verifyToken, upload.single('avatar'), userController.avatar);
+router.post('/avatar', verifyToken(), upload.single('avatar'), userController.avatar);
 
 module.exports = router;

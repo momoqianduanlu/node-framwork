@@ -16,6 +16,24 @@ const videoList = async (req, res) => {
   })
 }
 
+const getVideo = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const dbBack = await Video.findById(id).populate('user', '_id, username');
+    res.json({
+      code: 200,
+      message: '获取视频详情成功！',
+      result: dbBack
+    })
+  } catch (error) {
+    res.json({
+      code: 400,
+      message: '获取视频详情失败！',
+      error: error
+    })
+  }
+}
+
 
 const createVideo = async (req, res) => {
   const user = req.userInfo.user._id
@@ -39,5 +57,6 @@ const createVideo = async (req, res) => {
 
 module.exports = {
   videoList,
+  getVideo,
   createVideo
 }
