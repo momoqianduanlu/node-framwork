@@ -23,4 +23,19 @@ router.put('/update', verifyToken(), validators(updateValidates), userController
 
 router.post('/avatar', verifyToken(), upload.single('avatar'), userController.avatar);
 
+// 订阅频道
+router.get('/subscribe/:id', verifyToken(), userController.subscribe);
+
+// 取消订阅频道
+router.get('/unsubscribe/:id', verifyToken(), userController.unsubscribe);
+
+// 获取订阅频道信息
+router.get('/getSubscribes/:id', verifyToken(false), userController.getSubscribes);
+
+// 获取关注列表
+router.get('/getSubscribeList/:id', userController.getSubscribeList);
+
+// 获取粉丝列表
+router.get('/getFansList', verifyToken(), userController.getFansList);
+
 module.exports = router;
