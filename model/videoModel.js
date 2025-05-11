@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const md5 = require('../util/md5.js');
 const baseModel = require('./baseModel.js');
 
-// 定义用户模型
+// 定义视频模型
 const videoSchema = new mongoose.Schema({
     title: {
       type: String,
@@ -24,6 +24,10 @@ const videoSchema = new mongoose.Schema({
     cover: {
       type: String,
       required: false
+    },
+    commentCount: { // 评论数
+      type: Number,
+      default: 0
     },
     ...baseModel
 });

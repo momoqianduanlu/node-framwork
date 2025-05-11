@@ -20,4 +20,13 @@ router.get('/getVideo/:id', verifyToken(false), videoController.getVideo);
 // 视频信息入库操作
 router.post('/createVideo', verifyToken(), validators(createVideoValidates), videoController.createVideo);
 
+// 视频添加评论
+router.post('/addComment/:id', verifyToken(), videoController.addComment);
+
+// 获取某条视频的评论
+router.get('/getCommentList/:id', verifyToken(false), videoController.getCommentList);
+
+// 删除某条视频的评论
+router.delete('/deleteComment/:videoId/:commentId', verifyToken(), videoController.deleteComment);
+
 module.exports = router;
