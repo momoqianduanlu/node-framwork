@@ -6,4 +6,5 @@ module.exports = {
   Video: mongoose.model('Video', require('./videoModel')),
   Subscrible: mongoose.model('Subscrible', require('./subscribeModel')),
   Comment: mongoose.model('Comment', require('./videoCommentModel')),
+  Favorite: mongoose.model('Favorite', require('./videoLikeModel')),
 }

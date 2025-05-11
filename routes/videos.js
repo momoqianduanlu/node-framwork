@@ -29,4 +29,10 @@ router.get('/getCommentList/:id', verifyToken(false), videoController.getComment
 // 删除某条视频的评论
 router.delete('/deleteComment/:videoId/:commentId', verifyToken(), videoController.deleteComment);
 
+// 视频点赞
+router.get('/favorite/:id', verifyToken(), videoController.favorite);
+
+// 视频取消点赞
+router.get('/unfavorite/:id', verifyToken(), videoController.unfavorite);
+
 module.exports = router;

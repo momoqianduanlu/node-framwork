@@ -25,6 +25,14 @@ const videoSchema = new mongoose.Schema({
       type: String,
       required: false
     },
+    favoriteCount: { // 点赞数
+      type: Number,
+      default: 0
+    },
+    unfavoriteCount: { // 取消点赞数
+      type: Number,
+      default: 0
+    },
     commentCount: { // 评论数
       type: Number,
       default: 0

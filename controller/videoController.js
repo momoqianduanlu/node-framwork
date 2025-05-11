@@ -1,4 +1,4 @@
-const { Video, Comment } = require('../model/index.js')
+const { Video, Comment, Favorite } = require('../model/index.js')
 
 const videoList = async (req, res) => {
   // 分页操作
@@ -173,11 +173,140 @@ const deleteComment = async (req, res) => {
   }
 }
 
+// 喜欢视频
+const favorite = async (req, res) => {
+  const { id } = req.params; // 获取视频id
+  // 1. 查询喜欢的视频存不存在
+  const video = await Video.findById(id);
+
+  let isLike = true;
+
+  if (!video) {
+    return res.json({
+      code: 400,
+      message: '该视频不存在！'
+    })
+  }
+  // 2. 查看当前登录用户是否喜欢过该视频
+  const favorite = await Favorite.findOne({
+    user: req.userInfo.user._id,
+    video: id
+  });
+  if (favorite && favorite.like === 1) {
+    // 已经喜欢过该视频！取消喜欢并删除该条记录
+    isLike = false;
+    await Favorite.findByIdAndDelete(favorite._id);
+  }  else if (favorite && favorite.like === -1) {
+    // 之前不喜欢该视频！喜欢该视频
+    await Favorite.findByIdAndUpdate(favorite._id, {
+      like: 1
+    })
+  } else {
+    // 没有喜欢过该视频！喜欢该视频
+    const favoriteModel = new Favorite({
+      user: req.userInfo.user._id,
+      video: id,
+      like: 1
+    });
+    try {
+      await favoriteModel.save();
+    } catch (error) {
+      res.json({
+        code: 400,
+        message: '喜欢失败！',
+        error: error
+      })
+    }
+  }
+  // 获取视频的喜欢数量和不喜欢数量，并更新到视频表中 (countDocuments方法用于返回符合查询条件的文档数量)
+  video.favoriteCount = await Favorite.countDocuments({
+    video: id,
+    like: 1
+  });
+  video.unfavoriteCount = await Favorite.countDocuments({
+    video: id,
+    like: -1
+  });
+  await video.save();
+  res.json({
+    code: 200,
+    message: '成功！',
+    result: video,
+    isLike
+  })
+}
+
+// 不喜欢视频
+const unfavorite = async (req, res) => {
+  const { id } = req.params; // 获取视频id
+  // 1. 查询不喜欢的视频存不存在
+  const video = await Video.findById(id);
+
+  let disLike = true;
+
+  if (!video) {
+    return res.json({
+      code: 400,
+      message: '该视频不存在！'
+    })
+  }
+  // 2. 查看当前登录用户是否不喜欢过该视频
+  const favorite = await Favorite.findOne({
+    user: req.userInfo.user._id,
+    video: id
+  });
+  if (favorite && favorite.like === -1) {
+    // 已经不喜欢过该视频！取消不喜欢并删除该条记录
+    await Favorite.findByIdAndDelete(favorite._id);
+  }  else if (favorite && favorite.like === 1) {
+    // 之前喜欢该视频！改成不喜欢
+    disLike = false;
+    await Favorite.findByIdAndUpdate(favorite._id, {
+      like: -1
+    })
+  } else {
+    // 不喜欢该视频
+    const favoriteModel = new Favorite({
+      user: req.userInfo.user._id,
+      video: id,
+      like: -1
+    });
+    try {
+      await favoriteModel.save();
+      disLike = false;
+    } catch (error) {
+      res.json({
+        code: 400,
+        message: '不喜欢失败！',
+        error: error
+      })
+    }
+  }
+  // 获取视频的喜欢数量和不喜欢数量，并更新到视频表中 (countDocuments方法用于返回符合查询条件的文档数量)
+  video.favoriteCount = await Favorite.countDocuments({
+    video: id,
+    like: 1
+  });
+  video.unfavoriteCount = await Favorite.countDocuments({
+    video: id,
+    like: -1
+  });
+  await video.save();
+  res.json({
+    code: 200,
+    message: '成功！',
+    result: video,
+    disLike
+  })
+}
+
 module.exports = {
   videoList,
   getVideo,
   createVideo,
   addComment,
   getCommentList,
-  deleteComment
+  deleteComment,
+  favorite,
+  unfavorite
 }
