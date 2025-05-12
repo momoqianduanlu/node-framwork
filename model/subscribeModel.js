@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const baseModel = require('./baseModel.js');
 
-// 定义用户模型
+// 定义频道模型
 const subscribeSchema = new mongoose.Schema({
     user: {
       type: mongoose.Schema.Types.ObjectId,
